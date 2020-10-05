@@ -1,0 +1,147 @@
+{% load static i18n  %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <title>{% block title %} S Recoard {% endblock %}</title>
+
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'admin/css/all.min.css' %}">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="{% static 'admin/css/icheck-bootstrap.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'admin/css/adminlte.min.css' %}">
+  {% if debug %}
+    <link rel="stylesheet" href="{% static 'admin/css/papermerge.debug.css' %}">
+  {% else %}
+    <link rel="stylesheet" href="{% static 'admin/css/papermerge.css' %}">
+  {% endif  %}
+
+  {% block extra_css %}
+  {% endblock extra_css %}
+</head>
+
+<div class="toasts top-right">
+    {% for message in messages %}
+        <!-- Then put toasts within -->
+        <div class="toast {% if message.tags %} {{ message.tags }}{% endif %}" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header">
+            <strong class="mr-auto">{% trans "Info" %}</strong>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="toast-body">
+            {{ message|safe }}
+          </div>
+        </div>
+    {% endfor %}
+</div>
+
+<body class="hold-transition sidebar-mini">
+  <div class="wrapper">
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        {% include "admin/_nav.html" with has_perm_change_user=has_perm_change_user %}
+    </nav>
+    <!-- /.navbar -->
+
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary">
+        {% include "admin/_aside.html" with inbox_count=inbox_count %}
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div id="content-header" class="content-header">
+        <div class="container-fluid">
+          <div class="row">
+            {% block breadcrumb %}
+              <!-- breadcrumb or document/folder path -->
+            {% endblock %}
+          </div>
+          <div class="row mb-2 py-1">
+            {% block actions %}
+              <!-- action buttons like new folder, 
+                dropdown menu with rename, delete, download actions. 
+              -->
+            {% endblock %}
+          </div>
+        </div><!-- /.container-fluid -->
+      </div>
+      <!-- /.content-header -->
+
+      <!-- Main content -->
+      <div class="content">
+        {% block content %}
+        {% endblock %}
+      </div>
+      <!-- /.content -->
+      
+    </div>
+    <!-- /.content-wrapper -->
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      {% block control_sidebar %}
+        <!-- Control sidebar content goes here -->
+        <div class="p-2">
+          <div id="metadata">
+              <p>{% trans "Select a folder or a document to see its details here" %}</p>
+          </div>
+        </div>
+      {% endblock %}
+    </aside>
+    <!-- /.control-sidebar -->
+
+    <!-- Main Footer -->
+    <footer class="main-footer">
+      {% include "admin/_footer.html" %}
+    </footer>
+    <div id="uploader-view"></div>
+  </div>
+  <!-- ./wrapper -->
+
+  <!-- Modal Forms -->
+  {% block modals %}
+  {% endblock modals %}
+  <!-- Modal Forms -->
+
+  <!-- REQUIRED SCRIPTS -->
+
+  <!-- jQuery -->
+  <script src="{% static 'admin/js/jquery.min.js' %}"></script>
+  <!-- Bootstrap 4 -->
+  <script src="{% static 'admin/js/bootstrap.bundle.min.js' %}"></script>
+  <!-- AdminLTE App -->
+  <script src="{% static 'admin/js/adminlte.js' %}"></script>
+  {% if debug %}
+    <script src="{% static 'admin/js/papermerge.debug.js' %}"></script>
+  {% else %}
+    <script src="{% static 'admin/js/papermerge.js' %}"></script>
+  {% endif %}
+  
+  <script src="{% url 'javascript-catalog' %}"></script>
+
+  <script>
+    /* 
+      small hack which prevents advanced search dropdown to close
+      if user clicks inside/dropdown
+     */
+    $('.advanced-search .dropdown-menu').on('click',function (e) {
+      e.stopPropagation();
+    });
+  </script>
+
+  {% block extra_js %}
+  {% endblock extra_js %}
+
+  <!-- see comments in PapermergeJS/src/js/routers/browse.js:browse -->
+  <input type="hidden" id="root_node_id" name="root_node_id" value="{{root_node_id}}" />
+</body>
+</html>
